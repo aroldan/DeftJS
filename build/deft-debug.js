@@ -711,7 +711,7 @@ Open source under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
 */
 
 Ext.define('Deft.mvc.Observer', {
-  requires: ['Ext.util.Observable'],
+  requires: ['Deft.core.Class', 'Ext.util.Observable'],
   statics: {
     /**
     		Merges child and parent observers into a single object. This differs from a normal object merge because
@@ -1064,7 +1064,7 @@ Used in conjunction with {@link Deft.mixin.Controllable}.
 
 Ext.define('Deft.mvc.ViewController', {
   alternateClassName: ['Deft.ViewController'],
-  requires: ['Deft.log.Logger', 'Deft.mvc.ComponentSelector', 'Deft.mvc.Observer'],
+  requires: ['Deft.core.Class', 'Deft.log.Logger', 'Deft.mvc.ComponentSelector', 'Deft.mvc.Observer'],
   config: {
     /**
     		View controlled by this ViewController.
@@ -1096,7 +1096,7 @@ Ext.define('Deft.mvc.ViewController', {
   */
 
   controlView: function(view) {
-    if (view instanceof Ext.ClassManager.get('Ext.Container')) {
+    if (view instanceof Ext.ClassManager.get('Ext.Container') || view instanceof Ext.ClassManager.get('Ext.chart.Chart')) {
       this.setView(view);
       this.registeredComponentReferences = {};
       this.registeredComponentSelectors = {};
@@ -1356,21 +1356,19 @@ Ext.define('Deft.mvc.ViewController', {
       delete this.registeredObservers[target];
     }
   }
+}, function() {
+  /**
+  Preprocessor to handle merging of 'observe' objects on parent and child classes.
+  */
+  return Deft.Class.registerPreprocessor('observe', function(Class, data, hooks, callback) {
+    Deft.Class.hookOnClassExtended(data, function(Class, data, hooks) {
+      var _ref;
+      if (Class.superclass && ((_ref = Class.superclass) != null ? _ref.observe : void 0) && Deft.Class.extendsClass('Deft.mvc.ViewController', Class)) {
+        data.observe = Deft.mvc.Observer.mergeObserve(Class.superclass.observe, data.observe);
+      }
+    });
+  }, 'before', 'extend');
 });
-
-/**
-Preprocessor to handle merging of 'observe' objects on parent and child classes.
-*/
-
-
-Deft.Class.registerPreprocessor('observe', function(Class, data, hooks, callback) {
-  Deft.Class.hookOnClassExtended(data, function(Class, data, hooks) {
-    var _ref;
-    if (Class.superclass && ((_ref = Class.superclass) != null ? _ref.observe : void 0) && Deft.Class.extendsClass('Deft.mvc.ViewController', Class)) {
-      data.observe = Deft.mvc.Observer.mergeObserve(Class.superclass.observe, data.observe);
-    }
-  });
-}, 'before', 'extend');
 /*
 Copyright (c) 2012 [DeftJS Framework Contributors](http://deftjs.org)
 Open source under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
@@ -1400,7 +1398,7 @@ Ext.define('Deft.mixin.Controllable', {
         if (config == null) {
           config = {};
         }
-        if (this instanceof Ext.ClassManager.get('Ext.Container') && !this.$controlled) {
+        if ((this instanceof Ext.ClassManager.get('Ext.Container') || this instanceof Ext.ClassManager.get('Ext.chart.Chart')) && !this.$controlled) {
           try {
             controller = Ext.create(this.controller, config.controllerConfig || this.controllerConfig || {});
           } catch (error) {
@@ -1427,7 +1425,7 @@ Ext.define('Deft.mixin.Controllable', {
         if (config == null) {
           config = {};
         }
-        if (this instanceof Ext.ClassManager.get('Ext.Container') && !this.$controlled) {
+        if ((this instanceof Ext.ClassManager.get('Ext.Container') || this instanceof Ext.ClassManager.get('Ext.chart.Chart')) && !this.$controlled) {
           try {
             controller = Ext.create(this.controller, config.controllerConfig || this.controllerConfig || {});
           } catch (error) {

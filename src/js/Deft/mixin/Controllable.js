@@ -28,7 +28,7 @@ Ext.define('Deft.mixin.Controllable', {
         if (config == null) {
           config = {};
         }
-        if (this instanceof Ext.ClassManager.get('Ext.Container') && !this.$controlled) {
+        if ((this instanceof Ext.ClassManager.get('Ext.Container') || this instanceof Ext.ClassManager.get('Ext.chart.Chart')) && !this.$controlled) {
           try {
             controller = Ext.create(this.controller, config.controllerConfig || this.controllerConfig || {});
           } catch (error) {
@@ -55,7 +55,7 @@ Ext.define('Deft.mixin.Controllable', {
         if (config == null) {
           config = {};
         }
-        if (this instanceof Ext.ClassManager.get('Ext.Container') && !this.$controlled) {
+        if ((this instanceof Ext.ClassManager.get('Ext.Container') || this instanceof Ext.ClassManager.get('Ext.chart.Chart')) && !this.$controlled) {
           try {
             controller = Ext.create(this.controller, config.controllerConfig || this.controllerConfig || {});
           } catch (error) {

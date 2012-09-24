@@ -39,7 +39,7 @@ Ext.define( 'Deft.mvc.ViewController',
 	@protected
 	###
 	controlView: ( view ) ->
-		if view instanceof Ext.ClassManager.get( 'Ext.Container' )
+		if view instanceof Ext.ClassManager.get( 'Ext.Container' ) or view instanceof Ext.ClassManager.get ( 'Ext.chart.Chart' )
 			@setView( view )
 			@registeredComponentReferences = {}
 			@registeredComponentSelectors = {}

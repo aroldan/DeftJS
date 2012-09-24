@@ -28,7 +28,7 @@ Ext.define( 'Deft.mixin.Controllable',
 			# Ext JS 4.0
 			createControllerInterceptor = ->
 				return ( config = {} ) ->
-					if @ instanceof Ext.ClassManager.get( 'Ext.Container' ) and not @$controlled
+					if ( @ instanceof Ext.ClassManager.get( 'Ext.Container' ) or @ instanceof Ext.ClassManager.get ('Ext.chart.Chart' ) ) and not @$controlled
 						try
 							controller = Ext.create( @controller, config.controllerConfig || @controllerConfig || {} )
 						catch error
@@ -53,7 +53,7 @@ Ext.define( 'Deft.mixin.Controllable',
 			# Sencha Touch 2.0+, Ext JS 4.1+
 			createControllerInterceptor = ->
 				return ( config = {} ) ->
-					if @ instanceof Ext.ClassManager.get( 'Ext.Container' ) and not @$controlled
+					if ( @ instanceof Ext.ClassManager.get( 'Ext.Container' ) or @ instanceof Ext.ClassManager.get ('Ext.chart.Chart' ) ) and not @$controlled
 						try
 							controller = Ext.create( @controller, config.controllerConfig || @controllerConfig || {} )
 						catch error
